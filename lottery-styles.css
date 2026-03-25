@@ -153,20 +153,52 @@
     background: rgba(255, 107, 53, 0.2);
     padding: 15px 20px;
     border-radius: 10px;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
-.balance-info span:first-child {
+.price-info {
+    background: rgba(255, 215, 0, 0.15);
+    padding: 12px 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.balance-info span:first-child,
+.price-info span:first-child {
     color: rgba(255, 255, 255, 0.8);
 }
 
-.balance-info span:last-child {
+.balance-info span:last-child,
+.price-info span:last-child {
     font-weight: 700;
     font-size: 1.2rem;
     color: #ffd700;
+}
+
+.lottery-hint-info {
+    background: rgba(72, 187, 120, 0.15);
+    padding: 12px 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.lottery-hint-info span:first-child {
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.lottery-hint-info span:last-child {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #48bb78;
 }
 
 .input-group {

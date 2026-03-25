@@ -150,10 +150,34 @@
     background: rgba(255, 107, 53, 0.2);
     padding: 15px 20px;
     border-radius: 10px;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+}
+
+.price-info,
+.value-info {
+    background: rgba(255, 215, 0, 0.15);
+    padding: 12px 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.price-info span:first-child,
+.value-info span:first-child {
+    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.95rem;
+}
+
+.price-info span:nth-child(2),
+.value-info span:nth-child(2) {
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: #ffd700;
 }
 
 .balance-info span:first-child {

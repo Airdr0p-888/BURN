@@ -60,11 +60,22 @@
                         <span>代币余额：</span>
                         <span id="tokenBalance">0</span>
                     </div>
+                    <div class="balance-info">
+                        <span>代币价格：</span>
+                        <span id="tokenPrice">--</span>
+                        <span> USDT</span>
+                    </div>
 
                     <div class="input-group">
                         <label>转入数量</label>
                         <input type="number" id="depositAmount" placeholder="输入转入数量" min="0">
                         <button class="max-btn" onclick="setMaxAmount()">MAX</button>
+                    </div>
+
+                    <div class="value-info">
+                        <span>转入价值：</span>
+                        <span id="depositValue">0</span>
+                        <span> USDT</span>
                     </div>
 
                     <div class="distribution-preview">

@@ -117,8 +117,12 @@ async function burnAndLottery() {
     }
 
     const burnAmount = document.getElementById('burnAmount').value;
-    if (!burnAmount || parseFloat(burnAmount) < 100) {
-        showNotification('最小燃烧数量为100U', 'error');
+    const network = CONFIG[CONFIG.CURRENT_NETWORK];
+    const valueInUSDT = parseFloat(burnAmount) * network.TOKEN_PRICE_USDT;
+    const minRequiredTokens = network.LOTTERY_PRICE_USDT / network.TOKEN_PRICE_USDT;
+
+    if (!burnAmount || parseFloat(burnAmount) < minRequiredTokens) {
+        showNotification(`最小燃烧价值为${network.LOTTERY_PRICE_USDT} USDT（约${minRequiredTokens.toFixed(2)}个代币）`, 'error');
         return;
     }
 
@@ -129,7 +133,6 @@ async function burnAndLottery() {
 
     try {
         // 首先授权合约使用代币
-        const network = CONFIG[CONFIG.CURRENT_NETWORK];
         if (tokenContract) {
             const allowance = await tokenContract.methods
                 .allowance(currentAccount, network.CONTRACT_ADDRESS)
@@ -152,7 +155,8 @@ async function burnAndLottery() {
             .burnAndLottery(amountInWei)
             .send({ from: currentAccount });
 
-        showNotification('燃烧成功，请查看抽奖记录', 'success');
+        const lotteryTimes = Math.floor(valueInUSDT / network.LOTTERY_PRICE_USDT);
+        showNotification(`燃烧成功！获得${lotteryTimes}次抽奖机会`, 'success');
 
         // 刷新数据
         loadUserData();
@@ -172,6 +176,15 @@ async function loadUserData() {
     if (!currentAccount || !contract) return;
 
     try {
+        const network = CONFIG[CONFIG.CURRENT_NETWORK];
+
+        // 显示代币价格
+        const price = currentTokenPrice || 0.000001;
+        document.getElementById('tokenPrice').textContent = price.toLocaleString(undefined, {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 10
+        });
+
         // 获取代币余额
         if (tokenContract) {
             const balance = await tokenContract.methods
