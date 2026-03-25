@@ -2,7 +2,7 @@
 const CONFIG = {
     // 主网配置
     MAINNET: {
-        TOKEN_ADDRESS: '0xbc55777b3e260ecd0c13c33d2c72767c34a7ffff', // 代币合约地址
+        TOKEN_ADDRESS: '0xYourTokenContractAddressHere', // 代币合约地址（请填入实际的代币地址）
         CONTRACT_ADDRESS: '0x937a489ed42E81D7F625F6EaFc94E9986483E2F9', // 燃烧系统合约地址
         CHAIN_ID: 56,
         WBNB_ADDRESS: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', // WBNB地址
@@ -12,7 +12,7 @@ const CONFIG = {
     },
     // 测试网配置
     TESTNET: {
-        TOKEN_ADDRESS: '0xbc55777b3e260ecd0c13c33d2c72767c34a7ffff',
+        TOKEN_ADDRESS: '0x0000000000000000000000000000000000000000', // 代币合约地址（请填入实际的代币地址）
         CONTRACT_ADDRESS: '0x937a489ed42E81D7F625F6EaFc94E9986483E2F9',
         CHAIN_ID: 97,
         WBNB_ADDRESS: '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd',
@@ -66,9 +66,15 @@ function getContractInstance() {
         );
     }
 
-    if (!tokenContract && network.TOKEN_ADDRESS !== '0x0000000000000000000000000000000000000000') {
-        const tokenABI = getTokenABI();
-        tokenContract = new web3.eth.Contract(tokenABI, network.TOKEN_ADDRESS);
+    // 始终尝试创建 tokenContract，即使地址看起来像零地址
+    if (!tokenContract) {
+        try {
+            const tokenABI = getTokenABI();
+            tokenContract = new web3.eth.Contract(tokenABI, network.TOKEN_ADDRESS);
+            console.log('Token Contract initialized:', network.TOKEN_ADDRESS);
+        } catch (error) {
+            console.error('Failed to initialize token contract:', error);
+        }
     }
 
     return { contract, tokenContract };
