@@ -219,6 +219,8 @@
     font-size: 1.1rem;
     outline: none;
     transition: all 0.3s ease;
+    height: 52px;
+    box-sizing: border-box;
 }
 
 .input-group input:focus {
@@ -229,7 +231,8 @@
 .max-btn {
     position: absolute;
     right: 15px;
-    top: 8px;
+    top: 50%;
+    transform: translateY(-50%);
     background: linear-gradient(135deg, #ff6b35 0%, #ff8c5a 100%);
     color: white;
     border: none;
@@ -242,7 +245,7 @@
 }
 
 .max-btn:hover {
-    transform: scale(1.05);
+    transform: translateY(-50%) scale(1.05);
 }
 
 .distribution-preview {

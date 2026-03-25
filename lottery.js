@@ -248,12 +248,6 @@ async function loadUserData() {
         const network = CONFIG[CONFIG.CURRENT_NETWORK];
         const price = currentTokenPrice || 0.000001;
 
-        // 显示代币价格
-        document.getElementById('tokenPrice').textContent = price.toLocaleString(undefined, {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 10
-        });
-
         // 获取代币余额
         if (tokenContract) {
             const balance = await tokenContract.methods
