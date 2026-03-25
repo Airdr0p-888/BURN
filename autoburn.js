@@ -2,14 +2,14 @@
 const CONFIG = {
     // 主网配置
     MAINNET: {
-        TOKEN_ADDRESS: '0x0000000000000000000000000000000000000000', // 代币合约地址
-        CONTRACT_ADDRESS: '0x0000000000000000000000000000000000000000', // AutoBurn合约地址
+        TOKEN_ADDRESS: '0xbc55777b3e260ecd0c13c33d2c72767c34a7ffff', // 代币合约地址
+        CONTRACT_ADDRESS: '0x937a489ed42E81D7F625F6EaFc94E9986483E2F9', // AutoBurn合约地址
         CHAIN_ID: 56
     },
     // 测试网配置
     TESTNET: {
-        TOKEN_ADDRESS: '0x0000000000000000000000000000000000000000',
-        CONTRACT_ADDRESS: '0x0000000000000000000000000000000000000000',
+        TOKEN_ADDRESS: '0xbc55777b3e260ecd0c13c33d2c72767c34a7ffff',
+        CONTRACT_ADDRESS: '0x937a489ed42E81D7F625F6EaFc94E9986483E2F9',
         CHAIN_ID: 97
     },
     // 当前使用网络
@@ -23,6 +23,7 @@ let currentAccount = null;
 let contract;
 let tokenContract;
 let statsRefreshInterval;
+let currentTokenPrice = 0; // 当前代币价格
 
 // 初始化Web3
 async function initWeb3() {
