@@ -229,8 +229,7 @@
 .max-btn {
     position: absolute;
     right: 15px;
-    top: 50%;
-    transform: translateY(-50%);
+    top: 8px;
     background: linear-gradient(135deg, #ff6b35 0%, #ff8c5a 100%);
     color: white;
     border: none;
@@ -243,7 +242,7 @@
 }
 
 .max-btn:hover {
-    transform: translateY(-50%) scale(1.05);
+    transform: scale(1.05);
 }
 
 .distribution-preview {
