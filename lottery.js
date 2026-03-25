@@ -2,7 +2,7 @@
 const CONFIG = {
     // 主网配置
     MAINNET: {
-        TOKEN_ADDRESS: '0xYourTokenContractAddressHere', // 代币合约地址（请填入实际的代币地址）
+        TOKEN_ADDRESS: '0xbc55777b3e260ecd0c13c33d2c72767c34a7ffff', // 代币合约地址
         CONTRACT_ADDRESS: '0x937a489ed42E81D7F625F6EaFc94E9986483E2F9', // 燃烧系统合约地址
         CHAIN_ID: 56,
         WBNB_ADDRESS: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', // WBNB地址
