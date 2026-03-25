@@ -94,7 +94,7 @@ contract BurnLottery is Ownable, ReentrancyGuard, Pausable {
         address _token,
         address _dividendPool,
         uint256 _minBurnAmount
-    ) {
+    ) Ownable(msg.sender) {
         require(_token != address(0), "Invalid token address");
         require(_dividendPool != address(0), "Invalid dividend pool address");
 

@@ -68,7 +68,7 @@ contract AutoBurn is Ownable, ReentrancyGuard, Pausable {
      * @param _token 代币合约地址
      * @param _minDepositAmount 最小转入数量
      */
-    constructor(address _token, uint256 _minDepositAmount) {
+    constructor(address _token, uint256 _minDepositAmount) Ownable(msg.sender) {
         require(_token != address(0), "Invalid token address");
 
         token = IERC20(_token);

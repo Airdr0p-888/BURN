@@ -277,22 +277,45 @@ function stopAutoRefresh() {
     }
 }
 
-// AutoBurn合约ABI
+// MaleBurnSystem合约ABI
 function getAutoBurnABI() {
     return [
         {
-            "inputs": [
-                {"internalType": "address", "name": "_token", "type": "address"},
-                {"internalType": "uint256", "name": "_minDepositAmount", "type": "uint256"}
-            ],
+            "inputs": [],
             "stateMutability": "nonpayable",
             "type": "constructor"
         },
         {
             "inputs": [{"internalType": "uint256", "name": "_amount", "type": "uint256"}],
-            "name": "deposit",
+            "name": "burnAndLottery",
             "outputs": [],
             "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [{"internalType": "uint256", "name": "_amount", "type": "uint256"}],
+            "name": "autoDeposit",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [{"internalType": "address", "name": "_user", "type": "address"}],
+            "name": "getUserLotteries",
+            "outputs": [
+                {
+                    "components": [
+                        {"internalType": "address", "name": "user", "type": "address"},
+                        {"internalType": "uint256", "name": "lotteryNumber", "type": "uint256"},
+                        {"internalType": "uint256", "name": "burnAmount", "type": "uint256"},
+                        {"internalType": "uint256", "name": "timestamp", "type": "uint256"}
+                    ],
+                    "internalType": "struct MaleBurnSystem.LotteryEntry[]",
+                    "name": "",
+                    "type": "tuple[]"
+                }
+            ],
+            "stateMutability": "view",
             "type": "function"
         },
         {
@@ -305,7 +328,7 @@ function getAutoBurnABI() {
                         {"internalType": "uint256", "name": "burned", "type": "uint256"},
                         {"internalType": "uint256", "name": "timestamp", "type": "uint256"}
                     ],
-                    "internalType": "struct AutoBurn.Deposit[]",
+                    "internalType": "struct MaleBurnSystem.Deposit[]",
                     "name": "",
                     "type": "tuple[]"
                 }
@@ -317,40 +340,26 @@ function getAutoBurnABI() {
             "inputs": [],
             "name": "getContractStats",
             "outputs": [
-                {"internalType": "uint256", "name": "_totalDeposited", "type": "uint256"},
                 {"internalType": "uint256", "name": "_totalBurned", "type": "uint256"},
+                {"internalType": "uint256", "name": "_totalToDead", "type": "uint256"},
                 {"internalType": "uint256", "name": "_totalToPool", "type": "uint256"},
-                {"internalType": "uint256", "name": "_contractBalance", "type": "uint256"},
-                {"internalType": "uint256", "name": "_depositCount", "type": "uint256"}
+                {"internalType": "uint256", "name": "_dividendPoolBalance", "type": "uint256"},
+                {"internalType": "uint256", "name": "_totalLotteries", "type": "uint256"}
             ],
             "stateMutability": "view",
             "type": "function"
         },
         {
             "inputs": [],
-            "name": "contractTokenBalance",
-            "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+            "name": "token",
+            "outputs": [{"internalType": "contract IERC20", "name": "", "type": "address"}],
             "stateMutability": "view",
             "type": "function"
         },
         {
-            "inputs": [{"internalType": "address", "name": "_recipient", "type": "address"}, {"internalType": "uint256", "name": "_amount", "type": "uint256"}],
-            "name": "withdrawTokens",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [{"internalType": "address", "name": "_recipient", "type": "address"}],
-            "name": "withdrawAllTokens",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
             "inputs": [],
-            "name": "totalDeposited",
-            "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+            "name": "dividendPool",
+            "outputs": [{"internalType": "address", "name": "", "type": "address"}],
             "stateMutability": "view",
             "type": "function"
         },
@@ -363,7 +372,21 @@ function getAutoBurnABI() {
         },
         {
             "inputs": [],
+            "name": "totalToDead",
+            "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
             "name": "totalToPool",
+            "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
+            "stateMutability": "view",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "totalLotteries",
             "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
             "stateMutability": "view",
             "type": "function"
@@ -377,17 +400,7 @@ function getAutoBurnABI() {
                 {"indexed": false, "internalType": "uint256", "name": "toPool", "type": "uint256"},
                 {"indexed": false, "internalType": "uint256", "name": "timestamp", "type": "uint256"}
             ],
-            "name": "Deposited",
-            "type": "event"
-        },
-        {
-            "anonymous": false,
-            "inputs": [
-                {"indexed": true, "internalType": "address", "name": "recipient", "type": "address"},
-                {"indexed": false, "internalType": "uint256", "name": "amount", "type": "uint256"},
-                {"indexed": false, "internalType": "uint256", "name": "timestamp", "type": "uint256"}
-            ],
-            "name": "TokensWithdrawn",
+            "name": "AutoDeposit",
             "type": "event"
         }
     ];
