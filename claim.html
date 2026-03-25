@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>麻了 - 代币领取</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="claim-styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="nav-back-btn">← 返回首页</a>
+            <div class="nav-brand">🎁 代币领取</div>
+            <button id="connectWalletBtn" class="connect-wallet-btn">连接钱包</button>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <section class="claim-header">
+        <div class="container">
+            <div class="header-content">
+                <h1>🎁 代币领取</h1>
+                <p>输入验证码，领取您的代币奖励</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Claim Form Section -->
+    <section class="claim-section">
+        <div class="container">
+            <div class="claim-container">
+                <div class="claim-card">
+                    <div class="balance-info">
+                        <span>代币余额：</span>
+                        <span id="tokenBalance">0</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label>验证码</label>
+                        <input type="text" id="verifyCode" placeholder="请输入验证码" maxlength="6">
+                    </div>
+
+                    <button id="claimBtn" class="claim-btn" onclick="claimTokens()">
+                        🎁 立即领取
+                    </button>
+                </div>
+
+                <div class="history-card">
+                    <h3>📜 领取记录</h3>
+                    <div id="claimHistory" class="history-list">
+                        <div class="empty-state">暂无领取记录</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info Section -->
+    <section class="info-section">
+        <div class="container">
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">🔐</div>
+                    <h3>安全验证</h3>
+                    <p>通过验证码确保只有授权用户能够领取</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">⚡</div>
+                    <h3>快速到账</h3>
+                    <p>验证通过后立即到账，无需等待</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">📊</div>
+                    <h3>透明记录</h3>
+                    <p>所有领取记录链上可查，公开透明</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <h3>🎯 麻了 - 代币领取系统</h3>
+                <p>安全验证 · 快速到账 · 公开透明</p>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 麻了项目组. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <script src="claim.js"></script>
+</body>
+</html>

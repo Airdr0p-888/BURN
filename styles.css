@@ -408,6 +408,32 @@ body {
     box-shadow: 0 5px 20px rgba(72, 187, 120, 0.4);
 }
 
+.claim-badge {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 10px 25px;
+    border-radius: 25px;
+    font-weight: 600;
+    margin-top: 15px;
+}
+
+.claim-cta-btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 12px 25px;
+    border-radius: 25px;
+    font-weight: 600;
+    text-decoration: none;
+    margin-top: 20px;
+    transition: all 0.3s ease;
+}
+
+.claim-cta-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+}
+
 /* CTA Section */
 .cta-section {
     padding: 100px 20px;
