@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>麻了 - 自动燃烧系统</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="autoburn-styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="nav-back-btn">← 返回首页</a>
+            <div class="nav-brand">🔥 自动燃烧</div>
+            <button id="connectWalletBtn" class="connect-wallet-btn">连接钱包</button>
+        </div>
+    </nav>
+
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">📥</div>
+                    <div class="stat-value" id="totalDeposited">0</div>
+                    <div class="stat-label">累计转入</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-value" id="totalBurned">0</div>
+                    <div class="stat-label">累计燃烧</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-value" id="totalToPool">0</div>
+                    <div class="stat-label">留在合约</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">📊</div>
+                    <div class="stat-value" id="contractBalance">0</div>
+                    <div class="stat-label">合约余额</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Deposit Section -->
+    <section class="deposit-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>💎 转入代币自动燃烧</h2>
+                <p>转入代币，自动燃烧70%，30%留在合约中</p>
+            </div>
+
+            <div class="deposit-container">
+                <div class="deposit-card">
+                    <div class="balance-info">
+                        <span>代币余额：</span>
+                        <span id="tokenBalance">0</span>
+                    </div>
+
+                    <div class="input-group">
+                        <label>转入数量</label>
+                        <input type="number" id="depositAmount" placeholder="输入转入数量" min="0">
+                        <button class="max-btn" onclick="setMaxAmount()">MAX</button>
+                    </div>
+
+                    <div class="distribution-preview">
+                        <h3>资金分配预览</h3>
+                        <div class="distribution-bars">
+                            <div class="dist-bar-wrapper">
+                                <div class="dist-label">转入黑洞 (70%)</div>
+                                <div class="dist-bar burn-bar">
+                                    <div class="dist-bar-fill burn-fill" id="burnFill"></div>
+                                </div>
+                                <div class="dist-value" id="burnAmount">0</div>
+                            </div>
+                            <div class="dist-bar-wrapper">
+                                <div class="dist-label">留在合约 (30%)</div>
+                                <div class="dist-bar pool-bar">
+                                    <div class="dist-bar-fill pool-fill" id="poolFill"></div>
+                                </div>
+                                <div class="dist-value" id="poolAmount">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button id="depositBtn" class="deposit-btn" onclick="depositTokens()">
+                        🔥 立即转入燃烧
+                    </button>
+                </div>
+
+                <div class="history-card">
+                    <h3>📜 转入历史</h3>
+                    <div id="depositHistory" class="history-list">
+                        <div class="empty-state">暂无转入记录</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Info Section -->
+    <section class="info-section">
+        <div class="container">
+            <div class="info-grid">
+                <div class="info-card">
+                    <div class="info-icon">⚖️</div>
+                    <h3>自动分配</h3>
+                    <p>每次转入自动按照70%/30%比例分配，无需手动操作</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">🔒</div>
+                    <h3>安全可靠</h3>
+                    <p>所有操作链上可查，智能合约自动执行</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">📊</div>
+                    <h3>实时统计</h3>
+                    <p>实时显示累计燃烧和合约余额，数据透明</p>
+                </div>
+                <div class="info-card">
+                    <div class="info-icon">⚡</div>
+                    <h3>快速确认</h3>
+                    <p>基于BSC网络，交易快速确认，Gas费用低</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <h3>🎯 麻了 - 自动燃烧系统</h3>
+                <p>70%转入黑洞 · 30%留在合约 · 公开透明</p>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 麻了项目组. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <script src="autoburn.js"></script>
+</body>
+</html>

@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>麻了 - 燃烧抽奖系统</title>
+    <link rel="stylesheet" href="lottery-styles.css">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.10.0/dist/web3.min.js"></script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="nav-back-btn">← 返回首页</a>
+            <div class="nav-brand">🎯 麻了燃烧抽奖</div>
+            <button id="connectWalletBtn" class="connect-wallet-btn">连接钱包</button>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="lottery-hero">
+        <div class="container">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">🔥</div>
+                    <div class="stat-value" id="totalBurned">0</div>
+                    <div class="stat-label">累计燃烧</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">💰</div>
+                    <div class="stat-value" id="dividendPool">0</div>
+                    <div class="stat-label">分红池</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">🎰</div>
+                    <div class="stat-value" id="totalLotteries">0</div>
+                    <div class="stat-label">抽奖次数</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Burn Section -->
+    <section class="burn-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>燃烧代币参与抽奖</h2>
+                <p>燃烧100U代币即可获得1次抽奖机会</p>
+            </div>
+
+            <div class="burn-container">
+                <div class="burn-card">
+                    <h3>💎 燃烧抽奖</h3>
+                    <div class="balance-info">
+                        <span>代币余额：</span>
+                        <span id="tokenBalance">0</span>
+                    </div>
+                    <div class="input-group">
+                        <label>燃烧数量</label>
+                        <input type="number" id="burnAmount" placeholder="输入燃烧数量（最小100U）" min="100">
+                        <button class="max-btn" onclick="setMaxAmount()">MAX</button>
+                    </div>
+                    <div class="lottery-times-info">
+                        <span>可获得抽奖次数：</span>
+                        <span id="lotteryTimes">0</span>
+                        <span>次</span>
+                    </div>
+                    <div class="distribution-info">
+                        <div class="dist-item">
+                            <span class="dist-label">转入黑洞</span>
+                            <span class="dist-percent">70%</span>
+                        </div>
+                        <div class="dist-item">
+                            <span class="dist-label">分红池</span>
+                            <span class="dist-percent">30%</span>
+                        </div>
+                    </div>
+                    <button id="burnBtn" class="burn-btn" onclick="burnAndLottery()">立即燃烧抽奖</button>
+                </div>
+
+                <div class="my-lotteries-card">
+                    <h3>🎲 我的抽奖记录</h3>
+                    <div id="myLotteriesList" class="lottery-list">
+                        <div class="empty-state">暂无抽奖记录</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Leaderboard Section -->
+    <section class="leaderboard-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>🏆 燃烧排行榜</h2>
+                <p>查看所有参与者的燃烧贡献</p>
+            </div>
+
+            <div class="leaderboard-container">
+                <table class="leaderboard-table">
+                    <thead>
+                        <tr>
+                            <th>排名</th>
+                            <th>地址</th>
+                            <th>燃烧数量</th>
+                            <th>抽奖次数</th>
+                        </tr>
+                    </thead>
+                    <tbody id="leaderboardBody">
+                        <tr>
+                            <td colspan="4" class="loading">加载中...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- All Lotteries Section -->
+    <section class="all-lotteries-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>📜 所有抽奖记录</h2>
+                <p>公开透明的抽奖数据，可验证</p>
+            </div>
+
+            <div class="lottery-verify">
+                <div class="verify-input">
+                    <input type="text" id="verifyLotteryNumber" placeholder="输入抽奖号码验证">
+                    <button onclick="verifyLotteryNumber()">验证</button>
+                </div>
+                <div id="verifyResult" class="verify-result"></div>
+            </div>
+
+            <div class="all-lotteries-container">
+                <table class="lotteries-table">
+                    <thead>
+                        <tr>
+                            <th>抽奖号码</th>
+                            <th>燃烧数量</th>
+                            <th>时间</th>
+                            <th>状态</th>
+                        </tr>
+                    </thead>
+                    <tbody id="allLotteriesBody">
+                        <tr>
+                            <td colspan="4" class="loading">加载中...</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="load-more">
+                    <button id="loadMoreBtn" onclick="loadMoreLotteries()">加载更多</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <h3>🎯 麻了 - 透明燃烧，公平抽奖</h3>
+                <p>70%转入黑洞 · 30%进入分红池 · 公开可验证</p>
+                <div class="footer-social-links">
+                    <a href="https://t.me/Malemafour" target="_blank" class="footer-social-link">
+                        <span class="social-icon">📱</span>
+                        <span>官方电报</span>
+                    </a>
+                    <a href="https://x.com/ChandonGhosh7" target="_blank" class="footer-social-link">
+                        <span class="social-icon">🐦</span>
+                        <span>官方推特</span>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 麻了项目组. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Notification -->
+    <div id="notification" class="notification"></div>
+
+    <script src="lottery.js"></script>
+</body>
+</html>
