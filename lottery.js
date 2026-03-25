@@ -4,13 +4,21 @@ const CONFIG = {
     MAINNET: {
         TOKEN_ADDRESS: '0xbc55777b3e260ecd0c13c33d2c72767c34a7ffff', // 代币合约地址
         CONTRACT_ADDRESS: '0x937a489ed42E81D7F625F6EaFc94E9986483E2F9', // 燃烧系统合约地址
-        CHAIN_ID: 56
+        CHAIN_ID: 56,
+        WBNB_ADDRESS: '0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c', // WBNB地址
+        PANCAKE_ROUTER: '0x10ED43C718714eb63d5aA57B78B54704E256024E', // PancakeSwap路由地址
+        USDT_ADDRESS: '0x55d398326f99059fF7D5480595aC247870f72', // USDT地址
+        LOTTERY_PRICE_USDT: 100 // 抽奖价格（USDT）
     },
     // 测试网配置
     TESTNET: {
         TOKEN_ADDRESS: '0xbc55777b3e260ecd0c13c33d2c72767c34a7ffff',
         CONTRACT_ADDRESS: '0x937a489ed42E81D7F625F6EaFc94E9986483E2F9',
-        CHAIN_ID: 97
+        CHAIN_ID: 97,
+        WBNB_ADDRESS: '0xae13d989daC2f0dEbFf460aC112a837C89BAa7cd',
+        PANCAKE_ROUTER: '0xD99D1c33F9fC3444f8101754aBC46c52416550D1',
+        USDT_ADDRESS: '0x337610d27c682E347C9cD60BD4b3b1078c6D42',
+        LOTTERY_PRICE_USDT: 100
     },
     // 当前使用网络
     CURRENT_NETWORK: 'MAINNET'
@@ -24,6 +32,7 @@ let contract;
 let tokenContract;
 let lotteryRefreshInterval;
 let leaderboardRefreshInterval;
+let currentTokenPrice = 0; // 当前代币价格
 
 // 初始化Web3
 async function initWeb3() {
@@ -65,6 +74,44 @@ function getContractInstance() {
     return { contract, tokenContract };
 }
 
+// 获取代币价格（从PancakeSwap）
+async function getTokenPrice() {
+    const network = CONFIG[CONFIG.CURRENT_NETWORK];
+
+    try {
+        const routerContract = new web3.eth.Contract(getPancakeRouterABI(), network.PANCAKE_ROUTER);
+
+        // 获取1个代币能换多少USDT
+        const amountsOut = await routerContract.methods.getAmountsOut(
+            web3.utils.toWei('1', 'ether'),
+            [network.TOKEN_ADDRESS, network.WBNB_ADDRESS, network.USDT_ADDRESS]
+        ).call();
+
+        const tokenPriceInUSDT = web3.utils.fromWei(amountsOut[2], 'mwei'); // USDT是6位小数
+
+        return parseFloat(tokenPriceInUSDT);
+    } catch (error) {
+        console.error('获取代币价格失败:', error);
+        return 0.000001; // 返回默认价格
+    }
+}
+
+// PancakeSwap Router ABI
+function getPancakeRouterABI() {
+    return [
+        {
+            "constant": true,
+            "inputs": [
+                {"name": "amountIn", "type": "uint256"},
+                {"name": "path", "type": "address[]"}
+            ],
+            "name": "getAmountsOut",
+            "outputs": [{"name": "amounts", "type": "uint256[]"}],
+            "type": "function"
+        }
+    ];
+}
+
 // 连接钱包
 async function connectWallet() {
     const success = await initWeb3();
@@ -80,6 +127,9 @@ async function connectWallet() {
 
         // 初始化合约
         getContractInstance();
+
+        // 获取代币价格
+        currentTokenPrice = await getTokenPrice();
 
         // 加载数据
         loadUserData();
@@ -102,11 +152,21 @@ function setMaxAmount() {
     updateLotteryTimes();
 }
 
-// 更新抽奖次数
+// 更新抽奖次数（根据代币价格计算）
 function updateLotteryTimes() {
     const amount = parseFloat(document.getElementById('burnAmount').value) || 0;
-    const times = Math.floor(amount / 100);
+    const price = currentTokenPrice || 0.000001;
+    const valueInUSDT = amount * price;
+    const times = Math.floor(valueInUSDT / CONFIG[CONFIG.CURRENT_NETWORK].LOTTERY_PRICE_USDT);
+
     document.getElementById('lotteryTimes').textContent = times;
+    document.getElementById('lotteryTimes').dataset.value = times;
+
+    // 更新提示信息
+    const hint = document.getElementById('lotteryHint');
+    if (hint) {
+        hint.textContent = `${valueInUSDT.toFixed(4)} USDT`;
+    }
 }
 
 // 燃烧代币并抽奖
@@ -118,8 +178,9 @@ async function burnAndLottery() {
 
     const burnAmount = document.getElementById('burnAmount').value;
     const network = CONFIG[CONFIG.CURRENT_NETWORK];
-    const valueInUSDT = parseFloat(burnAmount) * network.TOKEN_PRICE_USDT;
-    const minRequiredTokens = network.LOTTERY_PRICE_USDT / network.TOKEN_PRICE_USDT;
+    const price = currentTokenPrice || 0.000001;
+    const valueInUSDT = parseFloat(burnAmount) * price;
+    const minRequiredTokens = network.LOTTERY_PRICE_USDT / price;
 
     if (!burnAmount || parseFloat(burnAmount) < minRequiredTokens) {
         showNotification(`最小燃烧价值为${network.LOTTERY_PRICE_USDT} USDT（约${minRequiredTokens.toFixed(2)}个代币）`, 'error');
@@ -177,9 +238,9 @@ async function loadUserData() {
 
     try {
         const network = CONFIG[CONFIG.CURRENT_NETWORK];
+        const price = currentTokenPrice || 0.000001;
 
         // 显示代币价格
-        const price = currentTokenPrice || 0.000001;
         document.getElementById('tokenPrice').textContent = price.toLocaleString(undefined, {
             minimumFractionDigits: 0,
             maximumFractionDigits: 10
@@ -254,6 +315,8 @@ async function loadLeaderboard() {
     if (!contract) return;
 
     try {
+        const network = CONFIG[CONFIG.CURRENT_NETWORK];
+        const price = currentTokenPrice || 0.000001;
         const [addresses, amounts] = await contract.methods.getLeaderboard(20).call();
 
         const tbody = document.getElementById('leaderboardBody');
@@ -264,7 +327,8 @@ async function loadLeaderboard() {
         }
 
         const html = addresses.map((addr, index) => {
-            const lotteryCount = Math.floor(amounts[index] / (100 * 10**18));
+            const amountInUSDT = parseFloat(web3.utils.fromWei(amounts[index], 'ether')) * price;
+            const lotteryCount = Math.floor(amountInUSDT / network.LOTTERY_PRICE_USDT);
             return `
                 <tr>
                     <td class="rank rank-${index + 1}">${index + 1}</td>
@@ -408,7 +472,6 @@ function stopAutoRefresh() {
 // 合约ABI
 function getBurnLotteryABI() {
     return [
-        // 这里只列出需要调用的函数
         {
             "inputs": [
                 {"internalType": "address", "name": "_token", "type": "address"},
@@ -507,20 +570,6 @@ function getBurnLotteryABI() {
                 {"internalType": "uint256", "name": "_dividendPoolBalance", "type": "uint256"},
                 {"internalType": "uint256", "name": "_totalLotteries", "type": "uint256"}
             ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "minBurnAmount",
-            "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "dividendPoolBalance",
-            "outputs": [{"internalType": "uint256", "name": "", "type": "uint256"}],
             "stateMutability": "view",
             "type": "function"
         },
